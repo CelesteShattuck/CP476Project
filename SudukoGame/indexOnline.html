@@ -4,7 +4,7 @@
         <meta charset="utf-8"/>
         <title>Sudoku</title>
         <link rel="stylesheet" href="styles.css">
-        <script src = "index.js"></script>
+        <script src = "onlineIndex.js"></script>
     </head>
     <header>
         <h1>Sudoku</h1>
@@ -23,8 +23,8 @@
                 <label><input id = "time-3" type = "radio" name = "time" value = "ten">10 mins</label>
             </div>
         </div>
-        <button id = "online-btn"><a href="indexOnline.html">Play online</a></button>
-        <button id = "offline-btn">Play offline</button>
+        <button id = "online-btn">Play online</button>
+        <button id = "offline-btn"><a href="sudokuOffline.html">Play offline</a></button>
     </header>
         <body>
             <div id = "stats">
@@ -45,5 +45,12 @@
                         <p id = "nine">9</p>
                     </div>
             </div>
+        <div id="content"></div>
+        <div>
+            <span id="status">Connecting...</span>
+            <input type="text" id="input" disabled="disabled" />
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="../chat/chat-frontend.js"></script>
         </body>
 </html>

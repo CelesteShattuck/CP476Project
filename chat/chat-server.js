@@ -16,12 +16,6 @@ var url = require('url');
  * Global variables
  */
 // latest 100 messages
-
-const mongo = require('mongodb');
-const MongoClient = mongo.MongoClient;
-const urlMongo = 'mongodb://localhost:27017';
-const ObjectID = mongo.ObjectID;
-
 var history = [];
 // list of currently connected clients (users)
 var clients = [];
@@ -32,51 +26,6 @@ var clients = [];
 function htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
         .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
-function userSentMessage(message){ //Instead of inserting a message into history, we will put it into database
-    //If i have time I will make this more efficent then closing and opening mongo many times
-    MongoClient.connect(urlMongo, { useNewUrlParser: true }, (err, client) => {
-
-        if (err) throw err;
-    
-        const db = client.db("chat");
-        let doc = {_id: new ObjectID(), timeStamp: message.time, userSending: message.author, messageContents: message.text, colour: message.color };
-        
-        db.collection('chatData').insertOne(doc).then((doc) => {
-            console.log('Chat Message inserted')
-            console.log(doc);
-        }).catch((err) => {
-    
-            console.log(err);
-        }).finally(() => {
-    
-            client.close();
-        });
-    });
-
-}
-function userJoined(){ //When a user joins, instead of drawing 100 messages from history, we will take them from the database
-    //We want to mimic the chat history feature, and use the messages in the database to feed into the chatbox
-    MongoClient.connect(urlMongo, { useNewUrlParser: true }, (err, client) => {
-
-        if (err) throw err;
-    
-        const db = client.db("chat");
-        db.collection('chatData').toArray().then((docs) => {
-
-            //console.log(docs); //Now through this all into the chatbox
-
-            connection.sendUTF(JSON.stringify({ type: 'history', data: docs }));
-    
-        }).catch((err) => {
-    
-            console.log(err);
-        }).finally(() => {
-    
-            client.close();
-        });
-    });
 }
 
 // Array with some colors
@@ -114,8 +63,6 @@ var wsServer = new webSocketServer({
     httpServer: server
 });
 
-
-
 // This callback function is called every time someone
 // tries to connect to the WebSocket server
 wsServer.on('request', function (request) {
@@ -132,11 +79,10 @@ wsServer.on('request', function (request) {
 
     console.log((new Date()) + ' Connection accepted.');
 
-    // send back chat history  REPLACE WITH MONGO
-    // if (history.length > 0) {
-    //     connection.sendUTF(JSON.stringify({ type: 'history', data: history }));
-    // }
-    userJoined()
+    // send back chat history
+    if (history.length > 0) {
+        connection.sendUTF(JSON.stringify({ type: 'history', data: history }));
+    }
 
     // user sent some message
     connection.on('message', function (message) {
@@ -161,9 +107,8 @@ wsServer.on('request', function (request) {
                     author: userName,
                     color: userColor
                 };
-                userSentMessage(obj)
-                // history.push(obj);
-                // history = history.slice(-100);
+                history.push(obj);
+                history = history.slice(-100);
 
                 // broadcast message to all connected clients
                 var json = JSON.stringify({ type: 'message', data: obj });
