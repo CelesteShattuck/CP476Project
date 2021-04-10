@@ -1,7 +1,14 @@
+Header for individual project:
+Project title: ???
+Name: ???
+ID: ???
+Statement: I claim that the enclosed project submission is my individual work.
 
-Project title: Sudoku web app
-Name: Celeste Shattuck, PakHei Lam
-ID: 170494820, 180800960
+
+Header for group project:
+Project title: ??? 
+Name: list of names, separated by comma
+ID: list ID in order, separated by comma 
 Statement: We claim that the enclosed project submission is our team work.
 
 Evaluation grid: [self-evaluation/total/marker-evaluation]

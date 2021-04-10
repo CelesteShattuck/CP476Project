@@ -35,7 +35,7 @@ window.onload = function(){
         gameDataAll = data
     });
     //Run startgame function when button is clicked
-    id("offline-btn").addEventListener("click", startGame);
+    id("online-btn").addEventListener("click", startGame);
     //Add event listener to each number in number containers
     for (let i = 0; i < id("number-container").children.length; i++){
         id("number-container").children[i].addEventListener("click", function(){
